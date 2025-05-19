@@ -56,30 +56,17 @@ func Detail_Card_Func(w http.ResponseWriter, r *http.Request) {
 		helpers.RenderTemplates(w, "statusPage.html", tools.ErrorInternalServerErr, http.StatusInternalServerError)
 		return
 	}
-	var geoLocations []tools.GeoLocation
-	for _, locationName := range locations.Locations {
-		lat, lng := helpers.Geo(locationName)
-		geo := tools.GeoLocation{
-			Name:      locationName,
-			Latitude:  lat,
-			Longitude: lng,
-		}
-		geoLocations = append(geoLocations, geo)
-	}
-
 	// set all the data that we fetched into one variable
 	fetching_data := struct {
-		Artist       *tools.Artists
-		Locations    *tools.Locations
-		Dates        *tools.ConcertDates
-		Relations    *tools.Relations
-		GeoLocations []tools.GeoLocation
+		Artist    *tools.Artists
+		Locations *tools.Locations
+		Dates     *tools.ConcertDates
+		Relations *tools.Relations
 	}{
-		Artist:       artistFound,
-		Locations:    locations,
-		Dates:        dates,
-		Relations:    relations,
-		GeoLocations: geoLocations,
+		Artist:    artistFound,
+		Locations: locations,
+		Dates:     dates,
+		Relations: relations,
 	}
 
 	helpers.RenderTemplates(w, "detailsCard.html", fetching_data, http.StatusOK)

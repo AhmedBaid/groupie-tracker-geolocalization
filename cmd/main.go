@@ -10,7 +10,6 @@ import (
 )
 
 func main() {
-	tools.InitTemplates()
 	var err error
 	// parse all the html file from the template folder to variable Tp
 	tools.Tp, err = template.ParseGlob("template/*.html")

@@ -1,30 +1,15 @@
 package tools
 
 import (
-	"encoding/json"
-	"net/http"
 	"html/template"
+	"net/http"
 )
 
 // our data structure
-var funcMap = template.FuncMap{
-	"marshal": func(v interface{}) template.JS {
-		a, _ := json.Marshal(v)
-		return template.JS(a)
-	},
-}
-
-var Tp *template.Template
-
-func InitTemplates() {
-	Tp = template.Must(template.New("").Funcs(funcMap).ParseGlob("template/*.html"))
-}
-
 type (
-	GeoLocation struct {
-		Name      string  `json:"name"`
-		Latitude  float64 `json:"lat"`
-		Longitude float64 `json:"lng"`
+	Geodata []struct {
+		Lat string `json:"lat"`
+		Lon string `json:"lon"`
 	}
 	Data struct {
 		Artists       *[]Artists
@@ -71,6 +56,8 @@ type (
 
 // NewErrorPage creates a new ErrorPage
 var (
+	Tp *template.Template
+
 	ErrorBadReq = ErrorPage{
 		Code:         http.StatusBadRequest,
 		ErrorMessage: "Oops! It looks like there was an issue with your request. Please check your input and try again.",

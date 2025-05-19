@@ -13,4 +13,5 @@ func Route() {
 	http.HandleFunc("/details/", handler.Detail_Card_Func)
 	http.HandleFunc("/Filter", handler.FilterHandler)
 	http.HandleFunc("/search", handler.Search)
+	http.HandleFunc("/api/geocoding", handler.GeoCoding)
 }
