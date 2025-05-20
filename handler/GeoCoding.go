@@ -41,7 +41,6 @@ func GeoCoding(w http.ResponseWriter, r *http.Request) {
 	for _, location := range locations.Locations {
 		coords, err := helpers.Geo(location, w)
 		if err != nil {
-			fmt.Println("Error fetching geolocation data:", err)
 			helpers.RenderTemplates(w, "statusPage.html", tools.ErrorInternalServerErr, http.StatusInternalServerError)
 			return
 		}

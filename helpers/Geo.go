@@ -21,7 +21,7 @@ func Geo(location string, w http.ResponseWriter) ([2]float64, error) {
 	url := fmt.Sprintf("https://nominatim.openstreetmap.org/search?format=json&q=%s", location)
 	err := Fetch(url, &data)
 	if err != nil {
-		RenderTemplates(w, "statusPage.html", tools.ErrorInternalServerErr, http.StatusInternalServerError)
+		return result, err
 	}
 
 	// If data is available, extract the coordinates
