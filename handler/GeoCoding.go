@@ -11,7 +11,7 @@ import (
 )
 
 func GeoCoding(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
+	if r.Method != http.MethodGet {
 		helpers.RenderTemplates(w, "statusPage.html", tools.ErrorMethodnotAll, http.StatusMethodNotAllowed)
 		return
 	}
@@ -41,12 +41,12 @@ func GeoCoding(w http.ResponseWriter, r *http.Request) {
 	for _, location := range locations.Locations {
 		coords, err := helpers.Geo(location, w)
 		if err != nil {
-			helpers.RenderTemplates(w, "statusPage.html", tools.ErrorMethodnotAll, http.StatusMethodNotAllowed)
+			fmt.Println("Error fetching geolocation data:", err)
+			helpers.RenderTemplates(w, "statusPage.html", tools.ErrorInternalServerErr, http.StatusInternalServerError)
 			return
 		}
 		geoLocations[location] = coords
 	}
-	fmt.Println("GeoLocations: ", geoLocations)
 	// Send geolocation data as JSON
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(geoLocations)

@@ -53,7 +53,7 @@
       </div>
     </nav>
 
-    <main>
+    <main id="main-content">
       <!-- Detail card -->
       <div class="detailCard">
         <!-- display name and image -->
@@ -109,9 +109,13 @@
           </div>
         </div>
       </div>
-      <div class="map-container">
-        <div id="loading-spinner" class="loading"></div>
-        <div id="map" class="map"></div>
+      <div id="map" class="map">
+        <div class="loading-sp" id="loading-spinner">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
       </div>
     </main>
 
@@ -123,45 +127,42 @@
         // Show the spinner before starting the map loading
         loadingSpinner.classList.add("loading");
 
-        // Initialize the map with a default position (this step happens right away)
+        // Initialize the map
         const map = L.map("map").setView([51.505, -0.09], 2);
         await L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
           attribution:
             '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         }).addTo(map);
 
-        // Fetch the geolocation data for the artist
-        const artistId = window.location.pathname
-          .split("/")
-          .filter(Boolean)
-          .pop();
+        const params = new URLSearchParams(window.location.search);
+        const artistId = params.get("id");
 
         try {
           const response = await fetch(`/api/geocoding?id=${artistId}`);
           if (!response.ok) {
-            main.innerHTML = `
-        <h1>Error fetching geolocation data</h1>
-        <h3>There was an error fetching the geolocation data for this artist. Please try again later.</h3>
-      `;
-            main.style.minHeight = "100px";
+            throw new Error("Failed to fetch geolocation data");
           }
 
-          // Parse the geolocation data
           const geoLocations = await response.json();
           const bounds = L.latLngBounds();
 
-          // Add markers for each location to the map
           for (const [location, coords] of Object.entries(geoLocations)) {
             bounds.extend(coords);
             L.marker(coords).addTo(map).bindPopup(location);
           }
 
-          // Adjust map bounds to fit all markers
-          map.fitBounds(bounds);
+          if (Object.keys(geoLocations).length > 0) {
+            map.fitBounds(bounds);
+          }
         } catch (error) {
           console.error("Error fetching geolocation data:", error);
+          main.innerHTML = `
+            <h1>Error fetching geolocation data</h1>
+            <h3>There was an error fetching the geolocation data for this artist. Please try again later.</h3>
+          `;
+          main.style.minHeight = "100px";
         } finally {
-          // Hide the spinner once data is loaded and the map is set up
+          // Spinner is hidden only after all the work is done (even if there's an error)
           loadingSpinner.classList.remove("loading");
         }
       });

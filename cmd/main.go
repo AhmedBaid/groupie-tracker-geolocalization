@@ -20,8 +20,8 @@ func main() {
 	// Register handlers
 	routes.Route()
 	//  run   the server
-	fmt.Println("Server running at http://localhost:8080/")
-	err = http.ListenAndServe(":8080", nil)
+	fmt.Println("Server running at http://localhost:8081/")
+	err = http.ListenAndServe(":8081", nil)
 	if err != nil {
 		fmt.Println("Server is already runing")
 		return

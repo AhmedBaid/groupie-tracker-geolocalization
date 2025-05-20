@@ -17,12 +17,12 @@ func Geo(location string, w http.ResponseWriter) ([2]float64, error) {
 		}
 		loca += string(char)
 	}
-	url := fmt.Sprintf("https://nominatim.openstreetmap.org/search?format=json&q=%s", location)
-	err := Fetch(url, &loca)
-	if err != nil {
-		RenderTemplates(w, "statusPage.html", tools.ErrorMethodnotAll, http.StatusMethodNotAllowed)
-	}
 	var data tools.Geodata
+	url := fmt.Sprintf("https://nominatim.openstreetmap.org/search?format=json&q=%s", location)
+	err := Fetch(url, &data)
+	if err != nil {
+		RenderTemplates(w, "statusPage.html", tools.ErrorInternalServerErr, http.StatusInternalServerError)
+	}
 
 	// If data is available, extract the coordinates
 	if len(data) > 0 {
